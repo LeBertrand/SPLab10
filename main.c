@@ -13,20 +13,19 @@
 typedef struct{
                 char song[100];
                 char artist[100];
-                int time[100];
+                int time;
                 } Albums;
 
 void bubble_sort( Albums arr[ ], int n, int s, int a );
-int read_album_nextline( char *album_in,  Albums arr[ ] );
-
+int read_album_nextline( FILE *file_in,  Albums arr[ ] );
 
 int main ( ){
 
     char str[100];
     char albums_list[249];
     Albums All_songs [ 249 ];
-    FILE *album_in;
-    read_album_nextline( "album.txt",  All_songs);
+    FILE *file_in;
+    read_album_nextline( file_in,  All_songs);
     int num_1;
     int num_2;
     printf("Welcome to Casey Kasem Presents: America's Top 10 Through the Years - The 1950sr!\n");
@@ -46,110 +45,102 @@ printf("%s",All_songs[i].song) ;
 return EXIT_SUCCESS;
 }
 
-int read_album_nextline( char *album_in , Albums albums[]){
-        album_in = fopen("album.txt", "r");
-        char str[TOTAL_LIMIT];
+int read_album_nextline( FILE *file_in , Albums albums[])
+{
+    file_in = fopen("album.txt", "r");
+    char str[TOTAL_LIMIT];
 
-        if (album_in == NULL)
-        {
-                puts("No file was not read");
-        }
-        else{
-                puts("A file was read");
-                int line_count = 0, song_count = 0;
-
-                while(fgets(str,  TOTAL_LIMIT, album_in) != NULL){
-                        str[strlen(str) - 1] = '\0';
-                        if(str[0] != '*'){
-                                if(line_count %3 == 0) {
-                                        strcpy(albums[song_count].song , str);
-                                }
-                                if(line_count %3 == 1){
-                                        strcpy(albums[song_count].arti st, str);
-                                }
-                                if(line_count %3 == 2){
-                                        albums[song_count].time = atoi(str);
-                                        song_count++;
-                                }
-
-                                line_count++;
-                        }
+    if (file_in == NULL)
+    {
+        puts("No file was not read");
+    }
+    else{
+        puts("A file was read");
+        int line_count = 0, song_count = 0;
+        while(fgets(str,  TOTAL_LIMIT, file_in) != NULL){
+            str[strlen(str) - 1] = '\0';
+            if(str[0] != '*'){
+                if(line_count %3 == 0) {
+                    strcpy(albums[song_count].song , str);
                 }
-                fclose(album_in);
-
+                if(line_count %3 == 1){
+                    strcpy(albums[song_count].artist, str);
+                }
+                if(line_count %3 == 2){
+                    albums[song_count].time = atoi(str);
+                    song_count++;
+                }
+                    line_count++;
+            }
         }
-        return song_count;
+        fclose(file_in);
+    }
 }
 
 
 
 void bubble_sort( Albums arr[ ] , int n,int s,int a )
 {
- int i, j;
- Albums temporary;
+    int i, j;
+    Albums temporary;
+    
     for( i = 0; i < n - 1; i++ )
         for ( j = 0; j < n - i - 1; j++ ){
-            if(s==1 && a==1){//sorting by song name asending
-                if ( strcmp(arr[ j ].song,  arr[ j + 1 ].song ) > 0 )
-                 {
+            if(s==1 && a==1 && strcmp(arr[ j ].song,  arr[ j + 1 ].song ) > 0 ){//sort song name asending
+                temporary = arr[ j ];
+                arr[ j ] = arr[ j + 1 ];
+                arr[ j + 1 ] = temporary;
+            }
+            else if (s==1&& a==2){//sort by song name descending
+                if ( strcmp(arr[ j ].song,  arr[ j + 1 ].song ) < 0 )
+                {
                     temporary = arr[ j ];
                     arr[ j ] = arr[ j + 1 ];
                     arr[ j + 1 ] = temporary;
-                }
-                else if (s==1&& a==2){
-                    if ( strcmp(arr[ j ].song,  arr[ j + 1 ].song ) < 0 )
-                    {
-                    temporary = arr[ j ];
-                    arr[ j ] = arr[ j + 1 ];
-                    arr[ j + 1 ] = temporary;
-                    }
                 }
             }
 
             else {//sort by artist
 
-        // for( i = 0; i < n - 1; i++ )
-        //     for ( j = 0; j < n - i - 1; j++ )
-        if(s==2 && a==1){//sorting by artist name asending
-                if ( strcmp(arr[ j ].artist,  arr[ j + 1 ].artist ) > 0 )
-                 {
-                temporary = arr[ j ];
-                 arr[ j ] = arr[ j + 1 ];
-                 arr[ j + 1 ] = temporary;
+                if(s==2 && a==1){//sorting by artist name asending
+                    if ( strcmp(arr[ j ].artist,  arr[ j + 1 ].artist ) > 0 )
+                    {
+                        temporary = arr[ j ];
+                        arr[ j ] = arr[ j + 1 ];
+                        arr[ j + 1 ] = temporary;
+                    }
                 }
-        else if (s==1 && a==2){
-                if ( strcmp(arr[ j ].artist,  arr[ j + 1 ].artist ) < 0 )
-                 {
-                temporary = arr[ j ];
-                 arr[ j ] = arr[ j + 1 ];
-                 arr[ j + 1 ] = temporary;
+                else if (s==1 && a==2){
+                    if ( strcmp(arr[ j ].artist,  arr[ j + 1 ].artist ) < 0 )
+                    {
+                        temporary = arr[ j ];
+                        arr[ j ] = arr[ j + 1 ];
+                        arr[ j + 1 ] = temporary;
+                    }
                 }
-
+            }
         }
-    }
 
+// // else {
 
+// // for( i = 0; i < n - 1; i++ )
+// //         for ( j = 0; j < n - i - 1; j++ )
+// //         if(s==3&& a==1){//sorting by time name asending
+// //                 if ( strcmp(arr[ j ].time,  arr[ j + 1 ].time ) > 0 )
+// //                  {
+// //                 temporary = arr[ j ];
+// //                  arr[ j ] = arr[ j + 1 ];
+// //                  arr[ j + 1 ] = temporary;
+// //                 }
+// //         else if (s==3 && a==2){
+// //                 if ( strcmp(arr[ j ].time,  arr[ j + 1 ].time ) < 0 )
+// //                  {
+// //                 temporary = arr[ j ];
+// //                  arr[ j ] = arr[ j + 1 ];
+// //                  arr[ j + 1 ] = temporary;
+// //                 }
 
-// else {
-
-// for( i = 0; i < n - 1; i++ )
-//         for ( j = 0; j < n - i - 1; j++ )
-//         if(s==3&& a==1){//sorting by time name asending
-//                 if ( strcmp(arr[ j ].time,  arr[ j + 1 ].time ) > 0 )
-//                  {
-//                 temporary = arr[ j ];
-//                  arr[ j ] = arr[ j + 1 ];
-//                  arr[ j + 1 ] = temporary;
-//                 }
-//         else if (s==3 && a==2){
-//                 if ( strcmp(arr[ j ].time,  arr[ j + 1 ].time ) < 0 )
-//                  {
-//                 temporary = arr[ j ];
-//                  arr[ j ] = arr[ j + 1 ];
-//                  arr[ j + 1 ] = temporary;
-//                 }
-
-//         }
+// //         }
 
 
 return;
